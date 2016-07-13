@@ -14,7 +14,7 @@ class ForceDirectedGraph{
         "ngInject";
 
         $reactive(this).attach($scope);
-        this.jsonFile = "none";
+        this.jsonFile = "";
 
     }
 
@@ -45,7 +45,7 @@ export default angular.module(name, [
         controller: ForceDirectedGraph,
         controllerAs: name,
         scope: {
-            jsonFile: "=?"
+            jsonFile: "@"
         },
         bindToController: true
     }
