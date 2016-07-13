@@ -17,7 +17,7 @@ import d3 from "d3";
 
 let _multiGraph = new WeakMap();
 
-class MultiGraphJSONLoader {
+class MultiGraphJSONLoader{
 
     /*
     * This class loads and creates a MultiGraph object to use after parsing a JSON file.

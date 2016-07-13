@@ -25,7 +25,7 @@ class ForceDirectedGraph{
         if (this.jsonFile) {
             console.log(this.jsonFile);
             this.myscoper.jsonFile = this.jsonFile;
-            this.graphLoader = new MultiGraphJSONLoader(this.jsonFile);
+            this.graphLoader = new MultiGraphJSONLoader();
             console.log(this.graphLoader);
             this.multiGraph = this.graphLoader.getMultiGraph();
             this.nodeList = this.multiGraph.getNodes();
