@@ -15,18 +15,28 @@ class ForceDirectedGraph{
 
         $reactive(this).attach($scope);
         this.jsonFile = "";
+        $scope.testval = 42;
+        $scope.jsonFile = this.jsonFile;
+        this.myscoper = $scope;
 
     }
 
-    jsonFileChanged(newFile){
-        if (newFile) {
-            this.jsonFile = newFile;
-            this.graphLoader = MultiGraphJSONLoader(this.jsonFile);
+    jsonFileChanged(){
+        if (this.jsonFile) {
+            console.log(this.jsonFile);
+            this.myscoper.jsonFile = this.jsonFile;
+            this.graphLoader = new MultiGraphJSONLoader(this.jsonFile);
+            console.log(this.graphLoader);
             this.multiGraph = this.graphLoader.getMultiGraph();
             this.nodeList = this.multiGraph.getNodes();
             this.matrixIndex = 0;
             this.linkList = this.multiGraph.getLinkListForMatrix(this.matrixIndex);
         }
+    }
+
+    checkThing(){
+        console.log(this.jsonFile);
+        this.jsonFileChanged(this.jsonFile)
     }
 
 
@@ -44,9 +54,6 @@ export default angular.module(name, [
         template: template,
         controller: ForceDirectedGraph,
         controllerAs: name,
-        scope: {
-            jsonFile: "@"
-        },
         bindToController: true
     }
 });
