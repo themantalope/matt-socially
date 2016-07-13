@@ -179,9 +179,11 @@ class MultiGraph {
 }
 
 
-const name = "multiGraph";
+export {MultiGraph}
 
-export default angular.module(name, [
-    angularMeteor,
-    MultiGraph
-]);
+// const name = "multiGraph";
+//
+// export default angular.module(name, [
+//     angularMeteor,
+//     MultiGraph
+// ]);

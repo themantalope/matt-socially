@@ -12,8 +12,8 @@
 
 import angular from 'angular';
 import angularMeteor from 'angular-meteor';
-import {name as MultiGraph} from "../multiGraph/multiGraph";
-import d3 from "d3";
+import {MultiGraph} from "../multiGraph/multiGraph";
+// import d3 from "d3";
 
 let _multiGraph = new WeakMap();
 
@@ -63,10 +63,12 @@ class MultiGraphJSONLoader{
 
 }
 
-const name = "multiGraphJSONLoader";
+export {MultiGraphJSONLoader}
 
-export default angular.module(name, [
-    angularMeteor,
-    MultiGraph,
-    MultiGraphJSONLoader
-]);
+// const name = "multiGraphJSONLoader";
+//
+// export default angular.module(name, [
+//     angularMeteor,
+//     MultiGraph,
+//     MultiGraphJSONLoader
+// ]);

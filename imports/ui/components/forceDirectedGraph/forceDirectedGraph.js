@@ -6,7 +6,7 @@ import angularMeteor from 'angular-meteor';
 import template from './forceDirectedGraph.html';
 import uiRouter from 'angular-ui-router';
 import {name as MultiGraph} from "../../../models/components/multiGraph/multiGraph"
-import {name as MultiGraphJSONLoader} from "../../../models/components/multiGraphJSONLoader/multiGraphJSONLoader"
+import {MultiGraphJSONLoader} from "../../../models/components/multiGraphJSONLoader/multiGraphJSONLoader"
 
 
 class ForceDirectedGraph{
@@ -22,10 +22,10 @@ class ForceDirectedGraph{
     }
 
     jsonFileChanged(){
-        if (this.jsonFile) {
-            console.log(this.jsonFile);
+        if (this.jsonFile.name) {
+            console.log(this.jsonFile.name);
             this.myscoper.jsonFile = this.jsonFile;
-            this.graphLoader = new MultiGraphJSONLoader();
+            this.graphLoader = new MultiGraphJSONLoader(this.jsonFile);
             console.log(this.graphLoader);
             this.multiGraph = this.graphLoader.getMultiGraph();
             this.nodeList = this.multiGraph.getNodes();
@@ -36,7 +36,7 @@ class ForceDirectedGraph{
 
     checkThing(){
         console.log(this.jsonFile);
-        this.jsonFileChanged(this.jsonFile)
+        // this.jsonFileChanged(this.jsonFile)
     }
 
 
