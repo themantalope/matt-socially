@@ -21,12 +21,12 @@ class MultiGraphJSONLoader{
 
     /*
     * This class loads and creates a MultiGraph object to use after parsing a JSON file.
-    * @param {fname} - the name of the json file with the network data
+    * @param {furl} - the URL of the json file with the network data
     * */
     
-    constructor(fname){
+    constructor(furl){
 
-        var loaddata = this._loadJSON(fname);
+        var loaddata = this._loadJSON(furl);
         console.log("loaddata: ", loaddata);
         console.log(loaddata.nodes);
         mg = new MultiGraph(loaddata.nodes, loaddata.matricies);
@@ -55,12 +55,15 @@ class MultiGraphJSONLoader{
             } else {
                 matricies = json.matricies;
             }
-
+            console.log("made it down here! almost done.");
+            console.log("nodes: ", nodes);
+            console.log("matricies: ", matricies);
+            return {"nodes":nodes, "matricies":matricies};
         });
 
 
 
-        return {"nodes":nodes, "matricies":matricies};
+
     }
 
     getMultiGraph(){

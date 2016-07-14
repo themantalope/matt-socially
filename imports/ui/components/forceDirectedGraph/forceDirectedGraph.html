@@ -2,5 +2,6 @@
 <p>{{jsonFile}}</p>
 <p>{{testval}}</p>
 <!--New json file: <input type="url" ng-model="forceDirectedGraph.jsonFile"/>-->
-<button ng-click="forceDirectedGraph.jsonFileChanged()">Click this</button>
+<button ng-click="forceDirectedGraph.checkThing()">Click this</button>
+<button ng-click="forceDirectedGraph.loadNetwork()">Click here to see if you have a network</button>
 <network-upload files="networkUpload.networkFileSrc"></network-upload>

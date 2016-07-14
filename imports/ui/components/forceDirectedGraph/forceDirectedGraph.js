@@ -45,6 +45,7 @@ class ForceDirectedGraph{
 
         console.log("this.jsonData: ", this.jsonData);
         console.log("temp: ", temp);
+        console.log("networks: ", this.networks);
 
 
     }
@@ -68,6 +69,18 @@ class ForceDirectedGraph{
         // console.log("nothing here: ", !this.jsonFile);
         // console.log(this.jsonFile);
         // this.jsonFileChanged(this.jsonFile)
+        console.log("networks: ", this.networks);
+    }
+
+    loadNetwork(){
+        if (this.networks.length > 0){
+            var theneturl = this.networks[0].url;
+            console.log("the net url: ", theneturl);
+            this.graphLoader = new MultiGraphJSONLoader(theneturl);
+        }
+        else {
+            console.log("no network files were found.");
+        }
     }
 
 

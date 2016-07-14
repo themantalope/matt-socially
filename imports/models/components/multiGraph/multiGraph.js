@@ -4,11 +4,7 @@
  * new subgraphs based on other data from either the node or link data.
  */
 
-import angular from 'angular';
-import angularMeteor from 'angular-meteor';
-
-
-
+import { Graph } from "../graph/graph"
 
 let _nodes = new WeakMap();
 let _matricies = new WeakMap();
@@ -35,7 +31,9 @@ class MultiGraph {
     * key.
     *
     * @param {matricies} - A list of adjacency matricies that describe the multilayer network for the list of nodes.
-    * The number of rows and columns in each matrix must be the same as the number of nodes.
+    * The number of rows and columns in each matrix must be the same as the number of nodes. The data for the matrix
+    * should be contained within the "data" attribute. At this time, only dense matricies are accepted but future
+    * versions will include support for sparse matrix formats.
     * */
 
     constructor(nodes, matricies){
@@ -48,8 +46,8 @@ class MultiGraph {
 
         var tmatricies = [];
         //do some error checking before we add any matricies.
-        for(var i = 0; i < matricies.length; i++){
-            var curmat = matricies[i];
+        for(var i = 0; i < matricies.data.length; i++){
+            var curmat = matricies.data[i];
             var matsize = curmat.length;
 
             if (matsize != tnodes.length){
@@ -160,20 +158,12 @@ class MultiGraph {
     *
     * @param {matrix_index} - the index of the matrix for which the link list is to be generated.
     * */
-    getLinkListForMatrix(matrix_index){
+    getGraphForMatrix(matrix_index){
         var allmats = _matricies.get(this);
         var curmat = allmats[matrix_index];
-        var link_list = [];
+        var nodes = this.getNodes();
 
-        for (var i = 0; i < curmat.length; i++){
-            for (var j = i; j < curmat[i].length; j++){
-                if (curmat[i][j] == 1){
-                    link_list.push({"source":i, "target":j})
-                }
-            }
-        }
-
-        return link_list;
+        return new Graph(nodes, curmat);
     }
 
 }
