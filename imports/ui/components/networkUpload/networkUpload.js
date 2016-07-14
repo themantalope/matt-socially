@@ -15,6 +15,7 @@ class NetworkUpload {
 
         $reactive(this).attach($scope);
         this.uploaded = [];
+        this.subscribe("networks");
     }
 
     addNetwork(files){
@@ -24,27 +25,31 @@ class NetworkUpload {
             console.log("current file: ", this.currentFile);
 
             const reader = new FileReader();
-            
 
             reader.onload = this.$bindToContext( (e) => {
                 console.log("in reader.onload");
-                console.log("here is e.target.result: ", e.target.result);
+                // console.log("here is e.target.result: ", e.target.result);
                 this.networkFileSrc = e.target.result;
+                // console.log("here is this.networkFileSrc: ", this.networkFileSrc);
+                this.save();
             });
 
-            reader.readAsDataURL("files: ", files[0]);
-            console.log("networkFileSrc: ", this.networkFileSrc);
+            reader.readAsDataURL(this.currentFile);
+            // console.log("networkFileSrc: ", this.networkFileSrc);
         }
 
-        console.log("this.networkFileSrc: ", this.networkFileSrc);
-        console.log("this.currentFile.name: ", this.currentFile.name);
+        // console.log("this.networkFileSrc: ", this.networkFileSrc);
+        // console.log("this.currentFile.name: ", this.currentFile.name);
         // this.save();
     }
 
     save() {
-        console.log("this.networkFileSrc: ", this.networkFileSrc);
-        console.log("this.currentFile.name: ", this.currentFile.name);
+        // console.log("this.networkFileSrc: ", this.networkFileSrc);
+        // console.log("this.currentFile.name: ", this.currentFile.name);
+        console.log("this.uploaded: ", this.uploaded);
+
         upload(this.networkFileSrc, this.currentFile.name, this.$bindToContext( (file) => {
+            console.log("file: ", file);
             this.uploaded.push(file);
             this.reset();
         }), (e) => {

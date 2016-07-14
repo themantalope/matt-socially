@@ -5,6 +5,7 @@ import angular from 'angular';
 import angularMeteor from 'angular-meteor';
 import { Meteor } from 'meteor/meteor';
 import template from './forceDirectedGraph.html';
+import { Networks } from "../../../api/networks";
 import { HTTP } from "meteor/http";
 // import uiRouter from 'angular-ui-router';
 import {MultiGraphJSONLoader} from "../../../models/components/multiGraphJSONLoader/multiGraphJSONLoader"
@@ -16,6 +17,7 @@ class ForceDirectedGraph{
         "ngInject";
 
         $reactive(this).attach($scope);
+        this.subscribe("networks");
         this.jsonFile = "/d1_d2_networks.json";
         console.log(this.jsonFile);
         $scope.testval = 42;
@@ -34,6 +36,11 @@ class ForceDirectedGraph{
             console.log(err);
         }
 
+        this.helpers({
+            networks(){
+                return Networks.find();
+            }
+        });
 
 
         console.log("this.jsonData: ", this.jsonData);
