@@ -27,7 +27,8 @@ class MultiGraphJSONLoader{
     constructor(fname){
 
         var loaddata = this._loadJSON(fname);
-
+        console.log("loaddata: ", loaddata);
+        console.log(loaddata.nodes);
         mg = new MultiGraph(loaddata.nodes, loaddata.matricies);
         _multiGraph.bind(this, mg);
         return mg;
@@ -36,9 +37,13 @@ class MultiGraphJSONLoader{
 
     _loadJSON(fname){
         var nodes, matricies;
+        console.log(d3);
+        console.log("fname: ", fname);
+        // console.log("JSON.parse", JSON.parse(fname));
 
-        d3.json(fname, function(json){
-
+        d3.json(fname, function(json) {
+            console.log("I'm in the d3.json function.");
+            console.log("json: ", json);
             if (!("nodes" in json)) {
                 throw "JSON file must have a 'nodes' list!"
             } else {
@@ -52,6 +57,8 @@ class MultiGraphJSONLoader{
             }
 
         });
+
+
 
         return {"nodes":nodes, "matricies":matricies};
     }
