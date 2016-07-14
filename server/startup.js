@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Parties } from '../imports/api/parties/index';
+import { Networks } from "../imports/api/networks/index";
 
 Meteor.startup(() => {
     if (Parties.find().count() === 0) {

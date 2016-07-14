@@ -6,8 +6,8 @@ import { Mongo } from "meteor/mongo";
 export const Networks = new Mongo.Collection("networks");
 
 Networks.allow({
-    insert() {return true},
-    remove() {return true},
-    update() {return true}
+    insert() {return true;},
+    remove() {return true;},
+    update() {return true;}
 });
 
