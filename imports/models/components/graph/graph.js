@@ -15,10 +15,10 @@ class Graph{
 
     constructor(nodes, adjacency){
 
-        _nodes.bind(this, nodes);
+        _nodes.set(this, nodes);
 
         //now we need to process the adjacency matrix
-        _links.bind(this, this._processAdjacency(adjacency));
+        _links.set(this, this._processAdjacency(adjacency));
 
     }
 

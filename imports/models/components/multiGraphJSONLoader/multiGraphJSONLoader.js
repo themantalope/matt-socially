@@ -25,25 +25,20 @@ class MultiGraphJSONLoader{
     * */
     
     constructor(furl){
-
-        var loaddata = this._loadJSON(furl);
-        console.log("loaddata: ", loaddata);
-        console.log(loaddata.nodes);
-        mg = new MultiGraph(loaddata.nodes, loaddata.matricies);
-        _multiGraph.bind(this, mg);
-        return mg;
-
+        console.log("I'm about to start load json");
+        this.dataLoaded = false;
+        this._loadJSON(furl);
     }
 
     _loadJSON(fname){
         var nodes, matricies;
-        console.log(d3);
-        console.log("fname: ", fname);
+//        console.log(d3);
+//        console.log("fname: ", fname);
         // console.log("JSON.parse", JSON.parse(fname));
 
         d3.json(fname, function(json) {
-            console.log("I'm in the d3.json function.");
-            console.log("json: ", json);
+//            console.log("I'm in the d3.json function.");
+//            console.log("json: ", json);
             if (!("nodes" in json)) {
                 throw "JSON file must have a 'nodes' list!"
             } else {
@@ -55,10 +50,21 @@ class MultiGraphJSONLoader{
             } else {
                 matricies = json.matricies;
             }
-            console.log("made it down here! almost done.");
-            console.log("nodes: ", nodes);
-            console.log("matricies: ", matricies);
-            return {"nodes":nodes, "matricies":matricies};
+//            console.log("made it down here! almost done.");
+//            console.log("nodes: ", nodes);
+//            console.log("matricies: ", matricies);
+//            console.log("now I'm about to return from the callback.");
+            var mg = new MultiGraph(nodes, matricies);
+            _multiGraph.set(this, mg);
+            this.dataLoaded = true;
+
+            console.log("json file loaded");
+
+//            console.log("this.getMultiGraph(): ", _multiGraph.get(this));
+//            console.log("multigraph nodes: ", _multiGraph.get(this).getNodes());
+//            console.log("graph 0: ", _multiGraph.get(this).getGraphForMatrix(0));
+//            console.log("graph 0 link list: ", _multiGraph.get(this).getGraphForMatrix(0).getLinks());
+            // return {"nodes":nodes, "matricies":matricies};
         });
 
 
@@ -74,11 +80,3 @@ class MultiGraphJSONLoader{
 }
 
 export {MultiGraphJSONLoader}
-
-// const name = "multiGraphJSONLoader";
-//
-// export default angular.module(name, [
-//     angularMeteor,
-//     MultiGraph,
-//     MultiGraphJSONLoader
-// ]);

@@ -10,6 +10,7 @@ import { HTTP } from "meteor/http";
 // import uiRouter from 'angular-ui-router';
 import {MultiGraphJSONLoader} from "../../../models/components/multiGraphJSONLoader/multiGraphJSONLoader"
 import {name as NetworkUpload } from "../networkUpload/networkUpload";
+//import { d3 } from "d3";
 
 
 class ForceDirectedGraph{
@@ -23,18 +24,7 @@ class ForceDirectedGraph{
         $scope.testval = 42;
         $scope.jsonFile = this.jsonFile;
         this.myscoper = $scope;
-        var temp;
-        try{
-            HTTP.get(Meteor.absoluteUrl(this.jsonFile), function (err, result) {
-                console.log(result.data);
-                this.jsonData = result.data;
-                console.log("this.jsonData in the http callback: ", this.jsonData);
-                temp = result.data;
-                return result.data;
-            });
-        }catch (err) {
-            console.log(err);
-        }
+        this.loadedGraphs = false;
 
         this.helpers({
             networks(){
@@ -42,27 +32,31 @@ class ForceDirectedGraph{
             }
         });
 
+        console.log("about to run loadNetwork()");
 
-        console.log("this.jsonData: ", this.jsonData);
-        console.log("temp: ", temp);
-        console.log("networks: ", this.networks);
+        this.loadNetwork();
 
+        console.log("call to loadNetwork() complete");
 
     }
 
     jsonFileChanged(){
         console.log("this is the jsonData: ", this.jsonData);
-        if (this.jsonData) {
+        if (this.jsonData && !this.graphLoader.dataLoaded ) {
             console.log(this.jsonData);
             this.myscoper.jsonFile = this.jsonFile;
             this.graphLoader = new MultiGraphJSONLoader(this.jsonData);
-            console.log(this.graphLoader.getMultiGraph());
-            console.log(this.graphLoader);
+
+        } else if (this.graphLoader.dataLoaded) {
             this.multiGraph = this.graphLoader.getMultiGraph();
-            this.nodeList = this.multiGraph.getNodes();
-            this.matrixIndex = 0;
-            this.linkList = this.multiGraph.getLinkListForMatrix(this.matrixIndex);
+            this.curGraph = this.multiGraph.getGraphForMatrix(0);
+            this.curLinks = this.curGraph.getLinks();
+            this.curNodes = this.curGraph.getNodes();
+
+            console.log("here are the links: ", this.curLinks);
+            console.log("here are the nodes: ", this.curNodes);
         }
+
     }
 
     checkThing(){
@@ -73,10 +67,24 @@ class ForceDirectedGraph{
     }
 
     loadNetwork(){
+
+        console.log("in the loadNetworks function");
+        console.log("this.networks: ", this.networks);
+
         if (this.networks.length > 0){
             var theneturl = this.networks[0].url;
             console.log("the net url: ", theneturl);
             this.graphLoader = new MultiGraphJSONLoader(theneturl);
+            console.log("this.graphloader: ", this.graphLoader);
+        }
+        else if (this.graphLoader.dataLoaded) {
+            this.multiGraph = this.graphLoader.getMultiGraph();
+            this.curGraph = this.multiGraph.getGraphForMatrix(0);
+            this.curLinks = this.curGraph.getLinks();
+            this.curNodes = this.curGraph.getNodes();
+
+            console.log("here are the links: ", this.curLinks);
+            console.log("here are the nodes: ", this.curNodes);
         }
         else {
             console.log("no network files were found.");
@@ -92,13 +100,90 @@ const name = "forceDirectedGraph";
 //create a module
 export default angular.module(name, [
     angularMeteor,
-    NetworkUpload
+    NetworkUpload,
+
 ]).directive(name, function () {
+    //constants
+    var width = 800;
+    var margin = 20;
+    var height = 500 - margin;
+
     return {
-        restrict: "ACEM",
+        restrict: "E",
         template: template,
         controller: ForceDirectedGraph,
         controllerAs: name,
-        bindToController: true
+        bindToController: true,
+        scope: {
+            links: "=",
+            nodes: "="
+        },
+        link: function (scope, element, attrs) {
+
+            scope.forceDirectedGraph.loadNetwork();
+
+            console.log("here is element[0]: ", element[0]);
+            console.log("this is d3: \n", d3);
+            console.log("this is angular: ", angular);
+            console.log("scope: ", scope);
+            console.log("here is scope.nodes: ", scope.nodes);
+            console.log("here is scope.links: ", scope.links);
+            console.log("scope.forceDirectedGraph: ", scope.forceDirectedGraph);
+            console.log("scope.forceDirectedGraph.links: ", scope.forceDirectedGraph.links);
+            console.log("scope.forceDirectedGraph.nodes: ", scope.forceDirectedGraph.nodes);
+
+            scope.$watch("links", function(newval, oldval){
+                scope.links = newval;
+            });
+
+            scope.$watch("nodes", function (newval, oldval) {
+                scope.nodes = newval;
+            });
+
+            if (scope.links && scope.nodes) {
+                var vis = d3.select(element[0])
+                            .append("svg")
+                            .attr("width", width)
+                            .attr("height", height + margin + 100);
+
+
+                var force = d3.layout.force()
+                              .size([width, height])
+                              .nodes(scope.nodes)
+                              .links(scope.links);
+
+                force.linkDistance(width / 2.0);
+
+                var link = vis.selectAll(".link")
+                              .data(scope.links)
+                              .enter()
+                              .append("line")
+                              .attr("class", "link");
+
+                var node = vis.selectAll(".node")
+                              .data(scope.nodes)
+                              .enter()
+                              .append("circle")
+                              .attr("class", "node");
+
+                force.on("end", ticked);
+
+                force.start();
+
+                function ticked () {
+                    link.attr("x1", function (d) { return d.source.x })
+                        .attr("x2", function (d) { return d.source.y })
+                        .attr("x2", function (d) { return d.target.x })
+                        .attr("y2", function (d) { return d.target.y });
+
+                    node.attr("cx", function (d) { return d.x })
+                        .attr("cy", function (d) { return d.y });
+
+                }
+
+            }
+
+
+        }
     }
 });

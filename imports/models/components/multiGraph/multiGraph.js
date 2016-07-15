@@ -43,12 +43,15 @@ class MultiGraph {
         var tnodes = nodedata.nodes;
         var max_depth = nodedata.max_depth;
         var global_struc = nodedata.structure;
+//        console.log(tnodes);
+//        console.log("number of nodes: ", tnodes.length);
 
         var tmatricies = [];
         //do some error checking before we add any matricies.
-        for(var i = 0; i < matricies.data.length; i++){
-            var curmat = matricies.data[i];
+        for(var i = 0; i < matricies.length; i++){
+            var curmat = matricies[i].data;
             var matsize = curmat.length;
+//            console.log("matrix number: ", i + 1, "number of rows: ", matsize);
 
             if (matsize != tnodes.length){
                 throw "The number of nodes must be the same as the number of rows and columns in the matricies!"
@@ -65,10 +68,11 @@ class MultiGraph {
 
 
         // bind the data to the weak maps
-        _nodes.bind(this, tnodes);
-        _matricies.bind(this, tmatricies);
-        _max_group_depth.bind(this, max_depth);
-        _global_node_structure.bind(this, global_struc);
+        _nodes.set(this, tnodes);
+        _matricies.set(this, tmatricies);
+        _max_group_depth.set(this, max_depth);
+        _global_node_structure.set(this, global_struc);
+
 
     }
     /*
@@ -80,16 +84,34 @@ class MultiGraph {
         return _nodes.get(this);
     }
 
+    numNodes() {
+        return _nodes.get(this).length;
+    }
+
+
+    numGraphs() {
+        return _matricies.get(this).length;
+    }
+
+    nodeStructure() {
+        return _global_node_structure.get(this);
+    }
+
     /*
     * This is a private function which processes the input node list. Will automatically add an "index" to the node if
     * it does not exist (will add in the order in which the node appeared).
     * @param {nodes} - The node list to process.
     * */
     _processNodes(nodes){
+//        console.log("in the node processing function.");
+//        console.log("here are the nodes that were passed in: ", nodes);
+//        console.log("nodes.length: ", nodes.length);
+
         var tnodes = [];
         //add the nodes to the object's node array
         for (var i = 0; i < nodes.length; i++){
             var curnode = nodes[i];
+//            console.log("here is the current node I am processing: ", curnode);
             if ("index" in curnode){
                 tnodes.push(curnode);
             } else {
