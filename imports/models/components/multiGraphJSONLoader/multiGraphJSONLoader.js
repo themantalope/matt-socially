@@ -10,10 +10,9 @@
  * networks as desired!
  */
 
-import angular from 'angular';
-import angularMeteor from 'angular-meteor';
+
 import {MultiGraph} from "../multiGraph/multiGraph";
-// import d3 from "d3";
+
 
 let _multiGraph = new WeakMap();
 
@@ -27,18 +26,15 @@ class MultiGraphJSONLoader{
     constructor(furl){
         console.log("I'm about to start load json");
         this.dataLoaded = false;
-        this._loadJSON(furl);
+        this.url = furl;
     }
 
-    _loadJSON(fname){
+    loadJSON(callback){
         var nodes, matricies;
-//        console.log(d3);
-//        console.log("fname: ", fname);
-        // console.log("JSON.parse", JSON.parse(fname));
+        var fname = this.url;
 
         d3.json(fname, function(json) {
-//            console.log("I'm in the d3.json function.");
-//            console.log("json: ", json);
+
             if (!("nodes" in json)) {
                 throw "JSON file must have a 'nodes' list!"
             } else {
@@ -50,27 +46,22 @@ class MultiGraphJSONLoader{
             } else {
                 matricies = json.matricies;
             }
-//            console.log("made it down here! almost done.");
-//            console.log("nodes: ", nodes);
-//            console.log("matricies: ", matricies);
-//            console.log("now I'm about to return from the callback.");
+
+
             var mg = new MultiGraph(nodes, matricies);
             _multiGraph.set(this, mg);
             this.dataLoaded = true;
-
             console.log("json file loaded");
+            callback(_multiGraph.get(this));
 
-//            console.log("this.getMultiGraph(): ", _multiGraph.get(this));
-//            console.log("multigraph nodes: ", _multiGraph.get(this).getNodes());
-//            console.log("graph 0: ", _multiGraph.get(this).getGraphForMatrix(0));
-//            console.log("graph 0 link list: ", _multiGraph.get(this).getGraphForMatrix(0).getLinks());
-            // return {"nodes":nodes, "matricies":matricies};
         });
 
 
 
 
     }
+
+
 
     getMultiGraph(){
         return _multiGraph.get(this);

@@ -18,11 +18,15 @@ class Graph{
         _nodes.set(this, nodes);
 
         //now we need to process the adjacency matrix
-        _links.set(this, this._processAdjacency(adjacency));
+        var links = this._processAdjacency(adjacency);
+        _links.set(this, links);
 
     }
 
     _processAdjacency(matrix) {
+
+//        console.log("here is the matrix: ", matrix);
+
         var link_list = [];
         for (var i = 0; i < matrix.length; i++){
             for (var j = i; j < matrix[i].length; j++){
