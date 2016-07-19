@@ -21,6 +21,8 @@ class ForceDirectedGraph{
 
         $scope.fdg = this;
 
+        this.apply = $scope.$apply;
+
 
         this.subscribe("networks");
         console.log(this.jsonFile);
@@ -30,10 +32,7 @@ class ForceDirectedGraph{
         $scope.graph = this.graph;
         this.loadedGraphs = false;
 
-        $scope.getNetworks = function () {
-            return this.networks;
-        };
-
+        $scope.loadedGraphs = this.loadedGraphs;
 
 
         this.helpers({
@@ -86,6 +85,14 @@ class ForceDirectedGraph{
                 weakme.graph = weakme.multiGraph.getGraphForMatrix(0);
                 weakme.loadedGraphs = true;
                 console.log("forceDirectedGraph.graph: ", weakme.graph);
+                console.log("forceDirectedgraphs.loadedGraphs: ", weakme.loadedGraphs);
+                console.log("here is weakme at the end of the callback: ", weakme);
+
+                if (weakme.loadedGraphs) {
+                    weakme.updateStuff();
+                    weakme.apply();
+                }
+
             });
 
         } else {
@@ -140,29 +147,41 @@ export default angular.module(name, [
             scope.$watch("links", function(newval, oldval){
                 scope.links = newval;
             });
-
             scope.$watch("nodes", function (newval, oldval) {
                 scope.nodes = newval;
             });
 
-            scope.$watch("graph", function () {
-
-            });
-
-            scope.$watch("forceDirectedGraph", function () {
-                console.log("in the forceDirectedGraph watch function");
-
-                scope.graph = scope.forceDirectedGraph.graph;
-                console.log("here is the scope.graph: ", scope.graph);
+            scope.$watch("forceDirectedGraph.graph", function () {
+                console.log("see that ftg.graph has been updated....");
+                console.log("running the graph update function...");
 
                 updatedsomething();
-
 
             }, true);
 
 
+            scope.$watch("loadedGraphs", function (newval, oldval) {
+                console.log("loadedGraphs oldval: ", oldval);
+                console.log("loadedGraphs newval: ", newval);
+
+                if (scope.forceDirectedGraph.loadedGraphs){
+                    console.log("I'm about to execute update stuff...");
+                    scope.forceDirectedGraph.updateStuff();
+                    updatedsomething();
+                }
+
+            }, true);
 
 
+            scope.$watch("forceDirectedGraph.networks", function (newval, oldval) {
+                console.log("here is the newval of ftg.networks: ", newval);
+                console.log("here is the oldval of ftg.networks: ", oldval);
+
+                var ftg = scope.forceDirectedGraph;
+                ftg.loadNetwork();
+
+
+            }, true);
 
 
             var vis = d3.select(element[0])
